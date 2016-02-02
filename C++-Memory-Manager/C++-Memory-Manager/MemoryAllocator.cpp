@@ -3,7 +3,26 @@
 #include <iostream>
 
 
-void roundUp(size_t&);
+///
+/// Rounds up the bytes to be: bytes % 8 == 0; in order to be aligned the blocks.
+///
+void roundUp(size_t& bytes);
+
+///
+/// If the first bit is Up ( 1 ) returns true
+/// else returns false
+///
+bool isFirstBitUp(value_type* number);
+
+
+////=====================================
+/// ---------------------------------------
+size_t getNeededBlockSpace(size_t& bytes);
+
+
+////=====================================
+/// ---------------------------------------
+void findFirstAvailableBlockSpace();
 
 
 MemoryAllocator::MemoryAllocator() {
@@ -33,7 +52,7 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 	}
 
 
-	if (*startPointerBlock % BLOCK_ALIGNMENT == 0) {
+	if ( ! isFirstBitUp(startPointerBlock)) {
 		value_type* pUserBlock = startPointerBlock + 1;
 		
 		size_t newHeaderBytes = bytes;
@@ -50,16 +69,18 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 		return pUserBlock;
 	}
 	else {
-		while (*startPointerBlock % BLOCK_ALIGNMENT != 0 && startPointerBlock >= pStartBlock && startPointerBlock <= pEndBlock) {
+		while (isFirstBitUp(startPointerBlock) && startPointerBlock >= pStartBlock && startPointerBlock <= pEndBlock) {
 			startPointerBlock += *startPointerBlock / BLOCK_ALIGNMENT + 2;
 		}
+
+		std::cout << "*startPointerBlock: " << *startPointerBlock << std::endl;
 
 		bool isLastAvailableBlock = false;
 		if (*startPointerBlock / BLOCK_ALIGNMENT + 2) {
 			isLastAvailableBlock = true;
 		}
 
-		if ((bytes + BLOCK_ALIGNMENT + BLOCK_ALIGNMENT > *startPointerBlock && !isLastAvailableBlock) || *startPointerBlock % BLOCK_ALIGNMENT != 0 || *startPointerBlock == 0) {
+		if ((bytes + BLOCK_ALIGNMENT + BLOCK_ALIGNMENT > *startPointerBlock && !isLastAvailableBlock) || isFirstBitUp(startPointerBlock) || *startPointerBlock == 0) {
 			std::cerr << "ERROR! There is not enough memory." << std::endl;
 			return NULL;
 		}
@@ -170,4 +191,8 @@ void roundUp(size_t& bytes) {
 	if (bytes % BLOCK_ALIGNMENT != 0) {
 		bytes = bytes - (bytes % BLOCK_ALIGNMENT) + BLOCK_ALIGNMENT;
 	}
+}
+
+bool isFirstBitUp(value_type* number) {
+	return *number & 1;
 }

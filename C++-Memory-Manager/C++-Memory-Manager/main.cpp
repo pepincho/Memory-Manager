@@ -32,8 +32,12 @@ int main() {
 	custom_allocator.MyFree((value_type*)test_3);
 	custom_allocator.MyFree((value_type*)test_4);
 	custom_allocator.MyFree((value_type*)test_1);
-	
-	custom_allocator.MyFree((value_type*)test_2);
+
+	char* test_6 = (char*)custom_allocator.MyMalloc(16);
+	//char* test_7 = (char*)custom_allocator.MyMalloc(8);
+	char* test_8 = (char*)custom_allocator.MyMalloc(12);
+
+	//custom_allocator.MyFree((value_type*)test_2);
 	
 	//std::cout << test_3[0] << std::endl;
 
