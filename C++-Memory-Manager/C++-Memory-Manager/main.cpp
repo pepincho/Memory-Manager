@@ -8,10 +8,10 @@ int main() {
 
 	MemoryAllocator custom_allocator;
 
-	char* test_1 = (char*) custom_allocator.MyMalloc(40);
-	char* test_2 = (char*) custom_allocator.MyMalloc(40);
+	char* test_1 = (char*) custom_allocator.MyMalloc(33);
+	char* test_2 = (char*) custom_allocator.MyMalloc(39);
 	char* test_3 = (char*)custom_allocator.MyMalloc(16);
-	char* test_4 = (char*)custom_allocator.MyMalloc(16);
+	char* test_4 = (char*)custom_allocator.MyMalloc(14);
 	//char* test_5 = (char*)custom_allocator.MyMalloc(8);
 
 	test_3[0] = 'a';

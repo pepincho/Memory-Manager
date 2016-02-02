@@ -4,6 +4,7 @@
 
 const int SIZE_BLOCK = 22;
 
+void roundUp(size_t&);
 
 MemoryAllocator::MemoryAllocator() {
 	this->pBlock = new (std::nothrow) value_type[SIZE_BLOCK];
@@ -29,6 +30,8 @@ MemoryAllocator::~MemoryAllocator() {
 
 value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 	value_type* startPointerBlock = this->pBlock;
+
+	roundUp(bytes);
 	
 	if (bytes > SIZE_BLOCK * 8 - 8 - 8) {
 		//....
@@ -193,4 +196,12 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 		}
 	}
 
+}
+
+void roundUp(size_t& bytes) {
+	if (bytes % 8 != 0) {
+		bytes = bytes - (bytes % 8) + 8;
+		//return bytes;
+	}
+	//return bytes;
 }
