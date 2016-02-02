@@ -1,10 +1,19 @@
+///
+///  main.cpp : Defines the entry point for the console application.
+///  Course project for the Data-Structures-and-Algorithms with C++ course in FMI 
+///
+///  Memory Manager
+///
+///  Created by Petar Ivanov with #45121.
+///
+
 #include <iostream>
 
 #include "MemoryAllocator.h"
 
 int main() {
 
-	std::cout << "Memory Allocator." << std::endl;
+	std::cout << "<><><><><>Memory Allocator.<><><><><>" << std::endl;
 
 	MemoryAllocator custom_allocator;
 
