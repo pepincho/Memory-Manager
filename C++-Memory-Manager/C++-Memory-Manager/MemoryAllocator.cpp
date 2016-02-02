@@ -34,16 +34,10 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 	roundUp(bytes);
 	
 	if (bytes > SIZE_BLOCK * 8 - 8 - 8) {
-		//....
-		std::cerr << "Error" << std::endl;
+		std::cerr << "ERROR! There is not enough memory." << std::endl;
 		return NULL;
 	}
 
-	if (bytes % 8 != 0) {
-		//....
-		std::cerr << "Error" << std::endl;
-		return NULL;
-	}
 
 	if (*startPointerBlock % 8 == 0) {
 		value_type* pUserBlock = startPointerBlock + 1;
@@ -71,8 +65,7 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 		}
 
 		if ((bytes + 8 + 8 > *startPointerBlock && ! isLastAvailableBlock) || *startPointerBlock % 8 != 0 || *startPointerBlock == 0) {
-			//....
-			std::cerr << "Error" << std::endl;
+			std::cerr << "ERROR! There is not enough memory." << std::endl;
 			return NULL;
 		}
 
@@ -88,8 +81,7 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 		}
 		else {
 			if (isLastAvailableBlock && bytes + 8 + 8 > *startPointerBlock) {
-				//....
-				std::cerr << "Error" << std::endl;
+				std::cerr << "ERROR! There is not enough memory." << std::endl;
 				return NULL;
 			}
 			size_t newHeaderBytes = bytes;
@@ -113,45 +105,28 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 }
 
 void MemoryAllocator::MyFree(value_type* pBlock) {
+	if (pBlock == NULL) {
+		std::cerr << "ERROR! Wrong address." << std::endl;
+		return;
+	}
 
-	//std::cout << *pBlock << std::endl;
-
-	value_type* currentHeader = pBlock - 1;
-	//std::cout << "curr: " << *currentHeader << std::endl;
-
-	value_type* leftHeader  = currentHeader - (*(currentHeader - 1) / 8) - 2;
-	//std::cout << "left: " << *leftHeader << std::endl;
+	value_type* currentHeader = pBlock - 1; 
+	//std::cout << "currentHeader: " << *currentHeader << std::endl;
 	
-	value_type* rightHeader = currentHeader + *currentHeader / 8 + 2;
-	//std::cout << "right: " << *rightHeader << std::endl;
+	value_type* leftHeader = currentHeader - (*(currentHeader - 1) / 8) - 2; 
+	//std::cout << "leftHeader: " << *leftHeader << std::endl;
+	
+	value_type* rightHeader = currentHeader + *currentHeader / 8 + 2; 
+	//std::cout << "rightHeader: " << *rightHeader << std::endl;
 
-	if (leftHeader < pStartBlock || rightHeader > pEndBlock) {
-		// che sme podali greshen adres
-		//.....
+	if (currentHeader < pStartBlock || currentHeader > pEndBlock) {
+		std::cerr << "ERROR! Wrong address." << std::endl;
+		return;
 	}
 
 	if (*leftHeader % 8 != 0 && *rightHeader % 8 != 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
 		std::cout << "-----first case" << std::endl;
 		*currentHeader &= ~1;
-	}
-	else if (*leftHeader % 8 != 0 && *rightHeader % 8 == 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
-		std::cout << "-----second case" << std::endl;
-		*currentHeader &= ~1;
-		size_t newHeaderBytes = *currentHeader + *rightHeader + 8 + 8;
-		*currentHeader = newHeaderBytes;
-		currentHeader += *currentHeader / 8 + 1;
-		*currentHeader = newHeaderBytes;
-
-	}
-	else if (*leftHeader % 8 == 0 && *rightHeader % 8 != 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
-		std::cout << "-----third case" << std::endl;
-		*currentHeader &= ~1;
-		size_t newHeaderBytes = *currentHeader + *leftHeader + 8 + 8;
-		currentHeader -= 1;
-		currentHeader -=  (*currentHeader / 8 + 1);
-		*currentHeader = newHeaderBytes;
-		currentHeader += *currentHeader / 8 + 1;
-		*currentHeader = newHeaderBytes;
 	}
 	else if (*leftHeader % 8 == 0 && *rightHeader % 8 == 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
 		std::cout << "-----fourth case" << std::endl;
@@ -163,37 +138,86 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 		currentHeader += *currentHeader / 8 + 1;
 		*currentHeader = newHeaderBytes;
 	}
+	//else if (*leftHeader % 8 != 0 && *rightHeader % 8 == 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
+	//	std::cout << "-----second case" << std::endl;
+	//	*currentHeader &= ~1;
+	//	size_t newHeaderBytes = *currentHeader + *rightHeader + 8 + 8;
+	//	*currentHeader = newHeaderBytes;
+	//	currentHeader += *currentHeader / 8 + 1;
+	//	*currentHeader = newHeaderBytes;
+
+	//}
+	else if (*rightHeader % 8 == 0 && rightHeader <= pEndBlock) {
+		std::cout << "-----second case" << std::endl;
+		*currentHeader &= ~1;
+		size_t newHeaderBytes = *currentHeader + *rightHeader + 8 + 8;
+		*currentHeader = newHeaderBytes;
+		currentHeader += *currentHeader / 8 + 1;
+		*currentHeader = newHeaderBytes;
+
+	}
+	//else if (*leftHeader % 8 == 0 && *rightHeader % 8 != 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
+	//	std::cout << "-----third case" << std::endl;
+	//	*currentHeader &= ~1;
+	//	size_t newHeaderBytes = *currentHeader + *leftHeader + 8 + 8;
+	//	currentHeader -= 1;
+	//	currentHeader -=  (*currentHeader / 8 + 1);
+	//	*currentHeader = newHeaderBytes;
+	//	currentHeader += *currentHeader / 8 + 1;
+	//	*currentHeader = newHeaderBytes;
+	//}
+	else if (*leftHeader % 8 == 0 && leftHeader >= pStartBlock) {
+		std::cout << "-----third case" << std::endl;
+		*currentHeader &= ~1;
+		size_t newHeaderBytes = *currentHeader + *leftHeader + 8 + 8;
+		currentHeader -= 1;
+		currentHeader -= (*currentHeader / 8 + 1);
+		*currentHeader = newHeaderBytes;
+		currentHeader += *currentHeader / 8 + 1;
+		*currentHeader = newHeaderBytes;
+		
+	}
 	else {
-		std::cout << "-----fifth case" << std::endl;
-		if (leftHeader < pStartBlock ) {
-			if (*rightHeader % 8 == 0) {
-				*currentHeader &= ~1;
-				size_t newHeaderBytes = *currentHeader + *rightHeader + 8 + 8;
-				*currentHeader = newHeaderBytes;
-				currentHeader += *currentHeader / 8 + 1;
-				*currentHeader = newHeaderBytes;
-			}
-			else {
-				*currentHeader &= ~1;
-			}
-		}
-		if (rightHeader > pEndBlock) {
-			if (*leftHeader % 8 == 0) {
-				*currentHeader &= ~1;
-				size_t newHeaderBytes = *currentHeader + *leftHeader + 8 + 8;
-				currentHeader -= 1;
-				currentHeader -= (*currentHeader / 8 + 1);
-				*currentHeader = newHeaderBytes;
-				currentHeader += *currentHeader / 8 + 1;
-				*currentHeader = newHeaderBytes;
-			}
-			else {
-				*currentHeader &= ~1;
-			}
-		}
-		if (leftHeader < pStartBlock && rightHeader > pEndBlock) {
+		std::cout << "fifth case" << std::endl;
+
+		if (leftHeader < pStartBlock && *rightHeader % 8 != 0) {
 			*currentHeader &= ~1;
 		}
+		
+		if (rightHeader > pEndBlock && *leftHeader % 8 != 0) {
+			*currentHeader &= ~1;
+		}
+
+		//std::cout << (leftHeader < pStartBlock) << std::endl;
+		//if (leftHeader < pStartBlock ) {
+		//	if (*rightHeader % 8 == 0) {
+		//		*currentHeader &= ~1;
+		//		size_t newHeaderBytes = *currentHeader + *rightHeader + 8 + 8;
+		//		*currentHeader = newHeaderBytes;
+		//		currentHeader += *currentHeader / 8 + 1;
+		//		*currentHeader = newHeaderBytes;
+		//	}
+		//	else {
+		//		*currentHeader &= ~1;
+		//	}
+		//}
+		//if (rightHeader > pEndBlock) {
+		//	if (*leftHeader % 8 == 0) {
+		//		*currentHeader &= ~1;
+		//		size_t newHeaderBytes = *currentHeader + *leftHeader + 8 + 8;
+		//		currentHeader -= 1;
+		//		currentHeader -= (*currentHeader / 8 + 1);
+		//		*currentHeader = newHeaderBytes;
+		//		currentHeader += *currentHeader / 8 + 1;
+		//		*currentHeader = newHeaderBytes;
+		//	}
+		//	else {
+		//		*currentHeader &= ~1;
+		//	}
+		//}
+		//if (leftHeader < pStartBlock && rightHeader > pEndBlock) {
+		//	*currentHeader &= ~1;
+		//}
 	}
 
 }
@@ -201,7 +225,5 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 void roundUp(size_t& bytes) {
 	if (bytes % 8 != 0) {
 		bytes = bytes - (bytes % 8) + 8;
-		//return bytes;
 	}
-	//return bytes;
 }
