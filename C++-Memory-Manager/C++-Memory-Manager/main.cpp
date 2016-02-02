@@ -16,14 +16,14 @@ int main() {
 
 	test_3[0] = 'a';
 
+
+	//custom_allocator.MyFree((value_type*)test_4);
 	//custom_allocator.MyFree((value_type*)test_1);
-
-	//custom_allocator.MyFree((value_type*)test_2);
 	
-	custom_allocator.MyFree((value_type*)test_4);
-
-
-	std::cout << test_3[0] << std::endl;
+	//custom_allocator.MyFree((value_type*)test_2);
+	//custom_allocator.MyFree((value_type*)test_3);
+	
+	//std::cout << test_3[0] << std::endl;
 
 
 	

@@ -59,7 +59,7 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 		return pUserBlock;
 	}
 	else {
-		while (*startPointerBlock % 8 != 0 && *startPointerBlock < SIZE_BLOCK * 8 && *startPointerBlock > 0) {
+		while (*startPointerBlock % 8 != 0 && startPointerBlock >= pStartBlock && startPointerBlock <= pEndBlock) {
 			startPointerBlock += *startPointerBlock / 8 + 2;
 		}
 		bool isLastAvailableBlock = false;
@@ -106,37 +106,41 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 
 	}
 
-
 	return NULL;
 }
 
 void MemoryAllocator::MyFree(value_type* pBlock) {
 
-	std::cout << *pBlock << std::endl;
+	//std::cout << *pBlock << std::endl;
 
 	value_type* currentHeader = pBlock - 1;
-	std::cout << "curr: " << *currentHeader << std::endl;
+	//std::cout << "curr: " << *currentHeader << std::endl;
 
 	value_type* leftHeader  = currentHeader - (*(currentHeader - 1) / 8) - 2;
-	std::cout << "left: " << *leftHeader << std::endl;
+	//std::cout << "left: " << *leftHeader << std::endl;
 	
 	value_type* rightHeader = currentHeader + *currentHeader / 8 + 2;
-	std::cout << "right: " << *rightHeader << std::endl;
+	//std::cout << "right: " << *rightHeader << std::endl;
 
-	if (*leftHeader % 8 != 0 && *rightHeader % 8 != 0 && *leftHeader < SIZE_BLOCK * 8 - 8 - 8 && *rightHeader < SIZE_BLOCK * 8 - 8 - 8) {
+	if (leftHeader < pStartBlock || rightHeader > pEndBlock) {
+		// che sme podali greshen adres
+		//.....
+	}
+
+	if (*leftHeader % 8 != 0 && *rightHeader % 8 != 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
 		std::cout << "-----first case" << std::endl;
 		*currentHeader &= ~1;
 	}
-	else if (*leftHeader % 8 != 0 && ((*rightHeader % 8 == 0 && *rightHeader < SIZE_BLOCK * 8 - 8 - 8) || *rightHeader > SIZE_BLOCK * 8 - 8 - 8) && *leftHeader < SIZE_BLOCK * 8 - 8 - 8) {
+	else if (*leftHeader % 8 != 0 && *rightHeader % 8 == 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
 		std::cout << "-----second case" << std::endl;
 		*currentHeader &= ~1;
 		size_t newHeaderBytes = *currentHeader + *rightHeader + 8 + 8;
 		*currentHeader = newHeaderBytes;
 		currentHeader += *currentHeader / 8 + 1;
- 		*currentHeader = newHeaderBytes;
+		*currentHeader = newHeaderBytes;
 
 	}
-	else if (*leftHeader % 8 == 0 && *rightHeader % 8 != 0 && *leftHeader < SIZE_BLOCK * 8 - 8 - 8 && *rightHeader < SIZE_BLOCK * 8 - 8 - 8) {
+	else if (*leftHeader % 8 == 0 && *rightHeader % 8 != 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
 		std::cout << "-----third case" << std::endl;
 		*currentHeader &= ~1;
 		size_t newHeaderBytes = *currentHeader + *leftHeader + 8 + 8;
@@ -146,7 +150,7 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 		currentHeader += *currentHeader / 8 + 1;
 		*currentHeader = newHeaderBytes;
 	}
-	else if (*leftHeader % 8 == 0 && *rightHeader % 8 == 0 && *leftHeader < SIZE_BLOCK * 8 - 8 - 8 && *rightHeader < SIZE_BLOCK * 8 - 8 - 8) {
+	else if (*leftHeader % 8 == 0 && *rightHeader % 8 == 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
 		std::cout << "-----fourth case" << std::endl;
 		*currentHeader &= ~1;
 		size_t newHeaderBytes = *currentHeader + *leftHeader + 8 + 8 + *rightHeader + 8 + 8;
@@ -155,6 +159,38 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 		*currentHeader = newHeaderBytes;
 		currentHeader += *currentHeader / 8 + 1;
 		*currentHeader = newHeaderBytes;
+	}
+	else {
+		std::cout << "-----fifth case" << std::endl;
+		if (leftHeader < pStartBlock ) {
+			if (*rightHeader % 8 == 0) {
+				*currentHeader &= ~1;
+				size_t newHeaderBytes = *currentHeader + *rightHeader + 8 + 8;
+				*currentHeader = newHeaderBytes;
+				currentHeader += *currentHeader / 8 + 1;
+				*currentHeader = newHeaderBytes;
+			}
+			else {
+				*currentHeader &= ~1;
+			}
+		}
+		if (rightHeader > pEndBlock) {
+			if (*leftHeader % 8 == 0) {
+				*currentHeader &= ~1;
+				size_t newHeaderBytes = *currentHeader + *leftHeader + 8 + 8;
+				currentHeader -= 1;
+				currentHeader -= (*currentHeader / 8 + 1);
+				*currentHeader = newHeaderBytes;
+				currentHeader += *currentHeader / 8 + 1;
+				*currentHeader = newHeaderBytes;
+			}
+			else {
+				*currentHeader &= ~1;
+			}
+		}
+		if (leftHeader < pStartBlock && rightHeader > pEndBlock) {
+			*currentHeader &= ~1;
+		}
 	}
 
 }
