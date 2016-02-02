@@ -138,15 +138,6 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 		currentHeader += *currentHeader / 8 + 1;
 		*currentHeader = newHeaderBytes;
 	}
-	//else if (*leftHeader % 8 != 0 && *rightHeader % 8 == 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
-	//	std::cout << "-----second case" << std::endl;
-	//	*currentHeader &= ~1;
-	//	size_t newHeaderBytes = *currentHeader + *rightHeader + 8 + 8;
-	//	*currentHeader = newHeaderBytes;
-	//	currentHeader += *currentHeader / 8 + 1;
-	//	*currentHeader = newHeaderBytes;
-
-	//}
 	else if (*rightHeader % 8 == 0 && rightHeader <= pEndBlock) {
 		std::cout << "-----second case" << std::endl;
 		*currentHeader &= ~1;
@@ -156,16 +147,6 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 		*currentHeader = newHeaderBytes;
 
 	}
-	//else if (*leftHeader % 8 == 0 && *rightHeader % 8 != 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
-	//	std::cout << "-----third case" << std::endl;
-	//	*currentHeader &= ~1;
-	//	size_t newHeaderBytes = *currentHeader + *leftHeader + 8 + 8;
-	//	currentHeader -= 1;
-	//	currentHeader -=  (*currentHeader / 8 + 1);
-	//	*currentHeader = newHeaderBytes;
-	//	currentHeader += *currentHeader / 8 + 1;
-	//	*currentHeader = newHeaderBytes;
-	//}
 	else if (*leftHeader % 8 == 0 && leftHeader >= pStartBlock) {
 		std::cout << "-----third case" << std::endl;
 		*currentHeader &= ~1;
@@ -187,37 +168,6 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 		if (rightHeader > pEndBlock && *leftHeader % 8 != 0) {
 			*currentHeader &= ~1;
 		}
-
-		//std::cout << (leftHeader < pStartBlock) << std::endl;
-		//if (leftHeader < pStartBlock ) {
-		//	if (*rightHeader % 8 == 0) {
-		//		*currentHeader &= ~1;
-		//		size_t newHeaderBytes = *currentHeader + *rightHeader + 8 + 8;
-		//		*currentHeader = newHeaderBytes;
-		//		currentHeader += *currentHeader / 8 + 1;
-		//		*currentHeader = newHeaderBytes;
-		//	}
-		//	else {
-		//		*currentHeader &= ~1;
-		//	}
-		//}
-		//if (rightHeader > pEndBlock) {
-		//	if (*leftHeader % 8 == 0) {
-		//		*currentHeader &= ~1;
-		//		size_t newHeaderBytes = *currentHeader + *leftHeader + 8 + 8;
-		//		currentHeader -= 1;
-		//		currentHeader -= (*currentHeader / 8 + 1);
-		//		*currentHeader = newHeaderBytes;
-		//		currentHeader += *currentHeader / 8 + 1;
-		//		*currentHeader = newHeaderBytes;
-		//	}
-		//	else {
-		//		*currentHeader &= ~1;
-		//	}
-		//}
-		//if (leftHeader < pStartBlock && rightHeader > pEndBlock) {
-		//	*currentHeader &= ~1;
-		//}
 	}
 
 }
