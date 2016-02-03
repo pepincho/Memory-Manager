@@ -13,16 +13,13 @@ void roundUp(size_t& bytes);
 /// else returns false
 ///
 bool isFirstBitUp(value_type* number);
+// tyrsim nai malkoto i mu pazim poziciqta, kato namerim po malko go zapisvame i taka ..
 
 
 ////=====================================
 /// ---------------------------------------
 size_t getNeededBlockSpace(size_t& bytes);
 
-
-////=====================================
-/// ---------------------------------------
-void findFirstAvailableBlockSpace();
 
 
 MemoryAllocator::MemoryAllocator() {
@@ -69,8 +66,14 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 		return pUserBlock;
 	}
 	else {
-		while (isFirstBitUp(startPointerBlock) && startPointerBlock >= pStartBlock && startPointerBlock <= pEndBlock) {
-			startPointerBlock += *startPointerBlock / BLOCK_ALIGNMENT + 2;
+		//while (isFirstBitUp(startPointerBlock) && startPointerBlock >= pStartBlock && startPointerBlock <= pEndBlock) {
+		//	startPointerBlock += *startPointerBlock / BLOCK_ALIGNMENT + 2;
+		//}
+		startPointerBlock = findBestFitBlockSpace();
+
+		if (startPointerBlock == NULL) {
+			std::cerr << "ERROR! There is not enough memory." << std::endl;
+			return NULL;
 		}
 
 		std::cout << "*startPointerBlock: " << *startPointerBlock << std::endl;
@@ -195,4 +198,25 @@ void roundUp(size_t& bytes) {
 
 bool isFirstBitUp(value_type* number) {
 	return *number & 1;
+}
+
+///
+/// Find best fit block for the needed bytes.
+///
+value_type* MemoryAllocator::findBestFitBlockSpace() {
+	value_type* startPointerBlock = this->pBlock;
+	value_type* pBestFit = NULL;
+	size_t bestFitBytes = SIZE_BLOCK * BLOCK_ALIGNMENT;
+
+	while (startPointerBlock >= pStartBlock && startPointerBlock <= pEndBlock) {
+
+		if (bestFitBytes > *startPointerBlock && ( ! isFirstBitUp(startPointerBlock))) {
+			bestFitBytes = *startPointerBlock;
+			pBestFit = startPointerBlock;
+		}
+
+		startPointerBlock += *startPointerBlock / BLOCK_ALIGNMENT + 2;
+	}
+
+	return pBestFit;
 }

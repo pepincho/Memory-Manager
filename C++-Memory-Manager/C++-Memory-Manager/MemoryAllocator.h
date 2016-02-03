@@ -28,6 +28,8 @@ public:
 		}
 	}
 
+	value_type* findBestFitBlockSpace();
+
 private:
 	value_type* pBlock;
 
