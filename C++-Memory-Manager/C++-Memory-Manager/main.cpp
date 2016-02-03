@@ -19,7 +19,7 @@ int main() {
 
 	int* pArr_1 = new int[4];
 
-	char* test_1 = (char*)custom_allocator.MyMalloc(40);
+	char* test_1 = (char*)custom_allocator.MyMalloc(33);
 	char* test_2 = (char*)custom_allocator.MyMalloc(39);
 	char* test_3 = (char*)custom_allocator.MyMalloc(16);
 	char* test_4 = (char*)custom_allocator.MyMalloc(14);
@@ -29,13 +29,17 @@ int main() {
 
 	//custom_allocator.MyFree((value_type*)pArr_1);
 
-	//custom_allocator.MyFree((value_type*)test_2);
-	//custom_allocator.MyFree((value_type*)test_4);
-	//custom_allocator.MyFree((value_type*)test_1);
+	custom_allocator.MyFree((value_type*)test_2);
+	custom_allocator.MyFree((value_type*)test_2);
+	custom_allocator.MyFree((value_type*)test_4);
+	custom_allocator.MyFree((value_type*)test_1);
 	custom_allocator.MyFree((value_type*)test_4);
 
+	custom_allocator.MyFree((value_type*)test_3);
+
+
 	char* test_6 = (char*)custom_allocator.MyMalloc(16);
-	char* test_7 = (char*)custom_allocator.MyMalloc(8);
+	char* test_7 = (char*)custom_allocator.MyMalloc(6);
 	//char* test_8 = (char*)custom_allocator.MyMalloc(12);
 
 	

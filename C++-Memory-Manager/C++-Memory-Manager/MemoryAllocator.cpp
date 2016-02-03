@@ -48,10 +48,41 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 		return NULL;
 	}
 
+	startPointerBlock = findBestFitBlockSpace();
 
-	if ( ! isFirstBitUp(startPointerBlock)) {
-		value_type* pUserBlock = startPointerBlock + 1;
-		
+	if (startPointerBlock == NULL) {
+		std::cerr << "ERROR! There is not enough memory." << std::endl;
+		return NULL;
+	}
+
+	std::cout << "*startPointerBlock: " << *startPointerBlock << std::endl;
+
+	bool isLastAvailableBlock = false;
+	if (*startPointerBlock / BLOCK_ALIGNMENT + 2) {
+		isLastAvailableBlock = true;
+	}
+
+	if ((bytes + BLOCK_ALIGNMENT + BLOCK_ALIGNMENT > *startPointerBlock && !isLastAvailableBlock) || isFirstBitUp(startPointerBlock) || *startPointerBlock == 0) {
+		std::cerr << "ERROR! There is not enough memory." << std::endl;
+		return NULL;
+	}
+
+	value_type* pUserBlock = startPointerBlock + 1;
+			
+	if (isLastAvailableBlock && bytes == *startPointerBlock) {
+		size_t newHeaderBytes = bytes;
+		newHeaderBytes |= 1; // set the bit to 1
+		size_t oldHeaderBytes = *startPointerBlock;
+		*startPointerBlock = newHeaderBytes;
+		startPointerBlock += bytes / BLOCK_ALIGNMENT + 1;
+		*startPointerBlock = bytes;
+	}
+	else {
+		if (isLastAvailableBlock && bytes + BLOCK_ALIGNMENT + BLOCK_ALIGNMENT > *startPointerBlock) {
+			std::cerr << "ERROR! There is not enough memory." << std::endl;
+			return NULL;
+		}
+
 		size_t newHeaderBytes = bytes;
 		newHeaderBytes |= 1; // set the bit to 1
 		size_t oldHeaderBytes = *startPointerBlock;
@@ -62,64 +93,9 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 		*startPointerBlock = oldHeaderBytes - bytes - BLOCK_ALIGNMENT - BLOCK_ALIGNMENT;
 		startPointerBlock += *startPointerBlock / BLOCK_ALIGNMENT + 1;
 		*startPointerBlock = oldHeaderBytes - bytes - BLOCK_ALIGNMENT - BLOCK_ALIGNMENT;
-		
-		return pUserBlock;
 	}
-	else {
-		//while (isFirstBitUp(startPointerBlock) && startPointerBlock >= pStartBlock && startPointerBlock <= pEndBlock) {
-		//	startPointerBlock += *startPointerBlock / BLOCK_ALIGNMENT + 2;
-		//}
-		startPointerBlock = findBestFitBlockSpace();
-
-		if (startPointerBlock == NULL) {
-			std::cerr << "ERROR! There is not enough memory." << std::endl;
-			return NULL;
-		}
-
-		std::cout << "*startPointerBlock: " << *startPointerBlock << std::endl;
-
-		bool isLastAvailableBlock = false;
-		if (*startPointerBlock / BLOCK_ALIGNMENT + 2) {
-			isLastAvailableBlock = true;
-		}
-
-		if ((bytes + BLOCK_ALIGNMENT + BLOCK_ALIGNMENT > *startPointerBlock && !isLastAvailableBlock) || isFirstBitUp(startPointerBlock) || *startPointerBlock == 0) {
-			std::cerr << "ERROR! There is not enough memory." << std::endl;
-			return NULL;
-		}
-
-		value_type* pUserBlock = startPointerBlock + 1;
-			
-		if (isLastAvailableBlock && bytes == *startPointerBlock) {
-			size_t newHeaderBytes = bytes;
-			newHeaderBytes |= 1; // set the bit to 1
-			size_t oldHeaderBytes = *startPointerBlock;
-			*startPointerBlock = newHeaderBytes;
-			startPointerBlock += bytes / BLOCK_ALIGNMENT + 1;
-			*startPointerBlock = bytes;
-		}
-		else {
-			if (isLastAvailableBlock && bytes + BLOCK_ALIGNMENT + BLOCK_ALIGNMENT > *startPointerBlock) {
-				std::cerr << "ERROR! There is not enough memory." << std::endl;
-				return NULL;
-			}
-
-			size_t newHeaderBytes = bytes;
-			newHeaderBytes |= 1; // set the bit to 1
-			size_t oldHeaderBytes = *startPointerBlock;
-			*startPointerBlock = newHeaderBytes;
-			startPointerBlock += bytes / BLOCK_ALIGNMENT + 1;
-			*startPointerBlock = bytes;
-			startPointerBlock += 1;
-			*startPointerBlock = oldHeaderBytes - bytes - BLOCK_ALIGNMENT - BLOCK_ALIGNMENT;
-			startPointerBlock += *startPointerBlock / BLOCK_ALIGNMENT + 1;
-			*startPointerBlock = oldHeaderBytes - bytes - BLOCK_ALIGNMENT - BLOCK_ALIGNMENT;
-		}
 		
-		return pUserBlock;
-	}
-
-	return NULL;
+	return pUserBlock;
 }
 
 void MemoryAllocator::MyFree(value_type* pBlock) {
