@@ -13,7 +13,9 @@
 
 int main() {
 
-	std::cout << "<><><><><>Memory Allocator.<><><><><>" << std::endl;
+	std::cout << "========================================================================" << std::endl;
+	std::cout << "<><><><><><><><><><>Memory Allocator by Petar Ivanov<><><><><><><><><><>" << std::endl;
+	std::cout << "========================================================================" << std::endl;
 
 	MemoryAllocator custom_allocator;
 
@@ -38,9 +40,10 @@ int main() {
 	custom_allocator.MyFree((value_type*)test_3);
 
 
-	char* test_6 = (char*)custom_allocator.MyMalloc(16);
-	char* test_7 = (char*)custom_allocator.MyMalloc(6);
-	//char* test_8 = (char*)custom_allocator.MyMalloc(12);
+	char* test_6 = (char*)custom_allocator.MyMalloc(160);
+	custom_allocator.MyFree((value_type*)test_6);
+	char* test_7 = (char*)custom_allocator.MyMalloc(1);
+	char* test_8 = (char*)custom_allocator.MyMalloc(12);
 
 	
 	//std::cout << test_3[0] << std::endl;
