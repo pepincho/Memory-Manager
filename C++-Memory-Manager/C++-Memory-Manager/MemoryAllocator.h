@@ -6,13 +6,19 @@
 
 typedef long long value_type;
 
-
+///
+/// the number of elements we want to have in our block(array)
+///
 const int SIZE_BLOCK = 22;
+
+///
+/// size of the block alignement
+///
 const int BLOCK_ALIGNMENT = 8;
 
 
 class MemoryAllocator {
-public:
+//public:
 	//typedef value_type* p_value_type;
 
 public:
@@ -24,38 +30,19 @@ public:
 	void MyFree(value_type* pBlock);
 
 public:
-	void printBlock() const {
-		for (int i = 0; i < SIZE_BLOCK; i++) {
-			std::cout << "pBlock[" << i << "] = " << pBlock[i] << std::endl;
-		}
-	}
-
-	value_type* getBlock() const {
-		return this->pBlock;
-	}
+	void printBlock() const;
+	value_type* getBlock() const;
 
 private:
 	value_type* findBestFitBlockSpace();
-
-	void roundUp(size_t& bytes) {
-		if (bytes % BLOCK_ALIGNMENT != 0) {
-			bytes = bytes - (bytes % BLOCK_ALIGNMENT) + BLOCK_ALIGNMENT;
-		}
-	}
-
-	bool isFirstBitUp(value_type* number) {
-		return *number & 1;
-	}
+	void roundUp(size_t& bytes);
+	bool isFirstBitUp(value_type* number);
 
 public:
-	const char* getMessageOutput() const {
-		return this->msg_output;
-	}
+	const char* getMessageOutput() const;
 
 private:
-	void clearMessage() {
-		this->msg_output = "";
-	}
+	void clearMessage();
 
 private:
 	value_type* pBlock;

@@ -6,22 +6,26 @@
 ///
 /// Rounds up the bytes to be: bytes % 8 == 0; in order to be aligned the blocks.
 ///
-void roundUp(size_t& bytes);
+void MemoryAllocator::roundUp(size_t& bytes) {
+	if (bytes % BLOCK_ALIGNMENT != 0) {
+		bytes = bytes - (bytes % BLOCK_ALIGNMENT) + BLOCK_ALIGNMENT;
+	}
+}
 
 ///
 /// If the first bit is Up ( 1 ) returns true
 /// else returns false
 ///
-bool isFirstBitUp(value_type* number);
-// tyrsim nai malkoto i mu pazim poziciqta, kato namerim po malko go zapisvame i taka ..
+bool MemoryAllocator::isFirstBitUp(value_type* number) {
+	return *number & 1;
+}
 
-
-////=====================================
-/// ---------------------------------------
-size_t getNeededBlockSpace(size_t& bytes);
-
-
-
+///
+/// Simple constructor of the MemoryAllocator.
+/// Initialize the block and set a pointer to the start of the block
+/// and a pointer to the end of the block in order to know
+/// the limits of our allocated block.
+///
 MemoryAllocator::MemoryAllocator() {
 	this->pBlock = new (std::nothrow) value_type[SIZE_BLOCK];
 
@@ -38,6 +42,11 @@ MemoryAllocator::~MemoryAllocator() {
 	delete this->pBlock;
 }
 
+///
+/// Takes the number of bytes we want to allocate.
+/// If we can allocate the wanted amount of bytes we allocate it
+/// or if we can't returns a NULL pointer and print an appropriate message.
+///
 value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 	value_type* startPointerBlock = this->pBlock;
 	
@@ -98,6 +107,12 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 	return pUserBlock;
 }
 
+///
+/// Takes a pointer to the block we want to free.
+/// If the given pointer is not valid, the function prints an
+/// appropriate message and returns, takes no actions.
+/// Delete the specified block and merge blocks if it's needed.
+///
 void MemoryAllocator::MyFree(value_type* pBlock) {
 	clearMessage();
 	if (pBlock == NULL || ! isFirstBitUp(pBlock - 1)) {
@@ -169,9 +184,9 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 
 }
 
-
 ///
-/// Find best fit block for the needed bytes.
+/// Finds best fit block for the needed bytes.
+/// returns pointer to the wanted position.
 ///
 value_type* MemoryAllocator::findBestFitBlockSpace() {
 	value_type* startPointerBlock = this->pBlock;
@@ -189,4 +204,44 @@ value_type* MemoryAllocator::findBestFitBlockSpace() {
 	}
 
 	return pBestFit;
+}
+
+///
+/// print one-by-one elements in our block
+///
+void MemoryAllocator::printBlock() const {
+	for (int i = 0; i < SIZE_BLOCK; i++) {
+		std::cout << "pBlock[" << i << "] = " << pBlock[i] << std::endl;
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+///
+/// Helpful functions for my Unit Test Project that tests my MemoryAllocator class.
+///
+
+///
+/// Function that helps to tests MyFree function
+/// in my Unit Test project.
+/// Set an error message in our MemoryAllocator object.
+///
+const char* MemoryAllocator::getMessageOutput() const {
+	return this->msg_output;
+}
+
+///
+/// Function that helps to tests MyFree function
+/// in my Unit Test project.
+/// Clear the message in our MemoryAllocator object.
+///
+void MemoryAllocator::clearMessage() {
+	this->msg_output = "";
+}
+
+///
+/// Returns a pointer to the start of our allocated block.
+///
+value_type* MemoryAllocator::getBlock() const {
+	return this->pBlock;
 }
