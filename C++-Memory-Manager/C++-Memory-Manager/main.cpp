@@ -12,11 +12,68 @@
 #include "MemoryAllocator.h"
 
 
+MemoryAllocator custom_allocator;
+
+
+value_type* MyMalloc(size_t bytes) {
+	return custom_allocator.MyMalloc(bytes);
+}
+
+void MyFree(value_type* pBlock) {
+	custom_allocator.MyFree(pBlock);
+}
+
+
 int main() {
 
 	std::cout << "========================================================================" << std::endl;
 	std::cout << "<><><><><><><><><><>Memory Allocator by Petar Ivanov<><><><><><><><><><>" << std::endl;
 	std::cout << "========================================================================" << std::endl;
+
+
+	//////////////////////////////////////////////////////////////
+	/// TEST 1
+	//////////////////////////////////////////////////////////////
+
+
+	int* pArr_1 = new int[4];
+
+	char* test_1 = (char*)MyMalloc(33);
+	char* test_2 = (char*)MyMalloc(39);
+	char* test_4 = (char*)MyMalloc(14);
+	char* test_3 = (char*)MyMalloc(16);
+	char* test_5 = (char*)custom_allocator.MyMalloc(8);
+
+	test_3[0] = 'a';
+
+	MyFree((value_type*)test_2);
+	MyFree((value_type*)test_2);
+	MyFree((value_type*)test_4);
+	MyFree((value_type*)test_1);
+	MyFree((value_type*)test_4);
+
+	MyFree((value_type*)test_3);
+	MyFree((value_type*)test_3);
+
+
+	char* test_6 = (char*)MyMalloc(160);
+	MyFree((value_type*)test_6);
+	char* test_7 = (char*)MyMalloc(1);
+	char* test_8 = (char*)MyMalloc(12);
+	value_type* test_9 = (value_type*)MyMalloc(88);
+
+	char* test_10 = (char*)MyMalloc(1);
+
+	MyFree((value_type*)test_10);
+	//custom_allocator.MyFree((value_type*)test_9);
+	//std::cout << "Ho" << std::endl;
+	MyFree((value_type*)(test_9 + 11 + 1));
+	MyFree((value_type*)(test_9));
+
+
+	//////////////////////////////////////////////////////////////
+	/// TEST 2
+	//////////////////////////////////////////////////////////////
 
 
 	//MemoryAllocator obj;
@@ -33,13 +90,15 @@ int main() {
 	//value_type* test_5 = (value_type*)obj.MyMalloc(9);
 
 
+	//////////////////////////////////////////////////////////////
+	/// TEST 3
+	//////////////////////////////////////////////////////////////
 
 
-	MemoryAllocator custom_allocator;
+	//MemoryAllocator custom_allocator;
 
-	char* test_1 = (char*)custom_allocator.MyMalloc(136);
-	char* test_2 = (char*)custom_allocator.MyMalloc(6);
-
+	////char* test_1 = (char*)custom_allocator.MyMalloc(136);
+	////char* test_2 = (char*)custom_allocator.MyMalloc(6);
 
 	//int* pArr_1 = new int[4];
 
@@ -76,44 +135,6 @@ int main() {
 	////std::cout << "Ho" << std::endl;
 	//custom_allocator.MyFree((value_type*)(test_9 + 11 + 1));
 	//custom_allocator.MyFree((value_type*)(test_9));
-
-
-
-
-
-	//std::cout << test_3[0] << std::endl;
-
-
-	//BlocksHolder a;
-	//char* test1 = (char*)a.MyMalloc(34);
-	//char* test2 = (char*)a.MyMalloc(22);
-	//char* test3 = (char*)a.MyMalloc(1);
-	//char* test4 = (char*)a.MyMalloc(4);
-
-	//char* test5 = (char*)a.MyMalloc(56);
-	////long long* test6 = a.MyMalloc(200);
-	//char* test7 = (char*)a.MyMalloc(3);
-	//char* test8 = (char*)a.MyMalloc(13);
-	//char* test9 = (char*)a.MyMalloc(58);
-	////a.print();
-
-	//FreeService::MyFree((long long*)test1);
-	////a.print();
-	////FreeService::MyFree((long long*)test8);
-	////a.print();
-	////FreeService::MyFree((long long*)test5);
-	////a.print();
-	//////FreeService::MyFree((long long*)test6);
-	////FreeService::MyFree((long long*)test4);
-	////a.print();
-	////FreeService::MyFree((long long*)test1);
-	////a.print();
-	////FreeService::MyFree((long long*)test2);
-	////a.print();
-	////FreeService::MyFree((long long*)test7);
-	////a.print();
-	////FreeService::MyFree((long long*)test9);
-
 
 	
 	//system("pause");

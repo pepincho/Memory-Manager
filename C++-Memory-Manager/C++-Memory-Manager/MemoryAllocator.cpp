@@ -33,7 +33,7 @@ MemoryAllocator::MemoryAllocator() {
 }
 
 MemoryAllocator::~MemoryAllocator() {
-	printBlock();
+	//printBlock();
 
 	delete this->pBlock;
 }
@@ -55,7 +55,7 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 		return NULL;
 	}
 
-	std::cout << "*startPointerBlock: " << *startPointerBlock << std::endl;
+	//std::cout << "*startPointerBlock: " << *startPointerBlock << std::endl;
 
 	bool isLastAvailableBlock = false;
 	if (*startPointerBlock / BLOCK_ALIGNMENT + 2) {
@@ -122,11 +122,11 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 	}
 
 	if (*leftHeader % BLOCK_ALIGNMENT != 0 && *rightHeader % BLOCK_ALIGNMENT != 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
-		std::cout << "-----first case-----" << std::endl;
+		//std::cout << "-----first case-----" << std::endl;
 		*currentHeader &= ~1;
 	}
 	else if (*leftHeader % BLOCK_ALIGNMENT == 0 && *rightHeader % BLOCK_ALIGNMENT == 0 && leftHeader >= pStartBlock && rightHeader <= pEndBlock) {
-		std::cout << "-----fourth case-----" << std::endl;
+		//std::cout << "-----fourth case-----" << std::endl;
 		*currentHeader &= ~1;
 		size_t newHeaderBytes = *currentHeader + *leftHeader + BLOCK_ALIGNMENT + BLOCK_ALIGNMENT + *rightHeader + BLOCK_ALIGNMENT + BLOCK_ALIGNMENT;
 		currentHeader -= 1;
@@ -136,7 +136,7 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 		*currentHeader = newHeaderBytes;
 	}
 	else if (*rightHeader % BLOCK_ALIGNMENT == 0 && rightHeader <= pEndBlock) {
-		std::cout << "-----second case-----" << std::endl;
+		//std::cout << "-----second case-----" << std::endl;
 		*currentHeader &= ~1;
 		size_t newHeaderBytes = *currentHeader + *rightHeader + BLOCK_ALIGNMENT + BLOCK_ALIGNMENT;
 		*currentHeader = newHeaderBytes;
@@ -145,7 +145,7 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 
 	}
 	else if (*leftHeader % BLOCK_ALIGNMENT == 0 && leftHeader >= pStartBlock) {
-		std::cout << "-----third case-----" << std::endl;
+		//std::cout << "-----third case-----" << std::endl;
 		*currentHeader &= ~1;
 		size_t newHeaderBytes = *currentHeader + *leftHeader + BLOCK_ALIGNMENT + BLOCK_ALIGNMENT;
 		currentHeader -= 1;
@@ -156,7 +156,7 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 		
 	}
 	else {
-		std::cout << "-----fifth case-----" << std::endl;
+		//std::cout << "-----fifth case-----" << std::endl;
 
 		if (leftHeader < pStartBlock && *rightHeader % BLOCK_ALIGNMENT != 0) {
 			*currentHeader &= ~1;
