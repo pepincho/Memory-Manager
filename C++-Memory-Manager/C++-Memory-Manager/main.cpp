@@ -11,6 +11,7 @@
 
 #include "MemoryAllocator.h"
 
+
 int main() {
 
 	std::cout << "========================================================================" << std::endl;
@@ -34,9 +35,11 @@ int main() {
 
 
 
+	MemoryAllocator custom_allocator;
 
+	char* test_1 = (char*)custom_allocator.MyMalloc(136);
+	char* test_2 = (char*)custom_allocator.MyMalloc(6);
 
-	//MemoryAllocator custom_allocator;
 
 	//int* pArr_1 = new int[4];
 
@@ -58,7 +61,6 @@ int main() {
 
 	//custom_allocator.MyFree((value_type*)test_3);
 	//custom_allocator.MyFree((value_type*)test_3);
-
 
 
 	//char* test_6 = (char*)custom_allocator.MyMalloc(160);

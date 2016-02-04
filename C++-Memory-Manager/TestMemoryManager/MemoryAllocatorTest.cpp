@@ -16,10 +16,21 @@ namespace TestMemoryManager {
 			Assert::AreEqual((int)((obj.getBlock()[21])), 160);
 		}
 
-		TEST_METHOD(MyMallocTooMuchBytes) {
+		TEST_METHOD(MyMallocTooMuchBytes_1) {
 			MemoryAllocator obj;
 			char* test_1 = (char*)obj.MyMalloc(400);
 			Assert::AreEqual(test_1, NULL);
+		}
+
+		TEST_METHOD(MyMallocTooMuchBytes_2) {
+			MemoryAllocator obj;
+			char* test_1 = (char*)obj.MyMalloc(136);
+			Assert::AreNotEqual(test_1, NULL);
+
+			char* test_2 = (char*)obj.MyMalloc(6);
+			Assert::AreNotEqual(test_2, NULL);
+
+			//obj.MyFree((value_type*)(test_1 + 17 + 1));
 		}
 		
 		TEST_METHOD(MyMallocAllignedBytes) {
@@ -153,6 +164,29 @@ namespace TestMemoryManager {
 			Assert::AreEqual(obj.getMessageOutput(), "");
 
 			obj.MyFree((value_type*)test_1);
+			Assert::AreEqual(obj.getMessageOutput(), "ERROR! Wrong address.");
+		}
+
+		TEST_METHOD(MyFreeWrongAddress_3) {
+			MemoryAllocator obj;
+			value_type* test_1 = (value_type*)obj.MyMalloc(144);
+
+			obj.MyFree((value_type*)(test_1 + 18 + 1));
+			Assert::AreEqual(obj.getMessageOutput(), "ERROR! Wrong address.");
+		}
+
+		TEST_METHOD(MyFreeWrongAddress_4) {
+			MemoryAllocator obj;
+			value_type* test_1 = (value_type*)obj.MyMalloc(136);
+
+			obj.MyFree((value_type*)(test_1 + 17 + 1));
+			Assert::AreEqual(obj.getMessageOutput(), "ERROR! Wrong address.");
+
+			value_type* test_2 = (value_type*)obj.MyMalloc(6);
+			obj.MyFree((value_type*)(test_1 + 17 + 2));
+			Assert::AreEqual(obj.getMessageOutput(), "");
+
+			obj.MyFree((value_type*)(test_1 + 17 + 2));
 			Assert::AreEqual(obj.getMessageOutput(), "ERROR! Wrong address.");
 		}
 	};

@@ -40,9 +40,9 @@ MemoryAllocator::~MemoryAllocator() {
 
 value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 	value_type* startPointerBlock = this->pBlock;
-
-	roundUp(bytes);
 	
+	roundUp(bytes);
+
 	if (bytes > SIZE_BLOCK * BLOCK_ALIGNMENT - BLOCK_ALIGNMENT - BLOCK_ALIGNMENT) {
 		std::cerr << "ERROR! There is not enough memory." << std::endl;
 		return NULL;
@@ -169,15 +169,6 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 
 }
 
-void roundUp(size_t& bytes) {
-	if (bytes % BLOCK_ALIGNMENT != 0) {
-		bytes = bytes - (bytes % BLOCK_ALIGNMENT) + BLOCK_ALIGNMENT;
-	}
-}
-
-bool isFirstBitUp(value_type* number) {
-	return *number & 1;
-}
 
 ///
 /// Find best fit block for the needed bytes.

@@ -34,7 +34,18 @@ public:
 		return this->pBlock;
 	}
 
+private:
 	value_type* findBestFitBlockSpace();
+
+	void roundUp(size_t& bytes) {
+		if (bytes % BLOCK_ALIGNMENT != 0) {
+			bytes = bytes - (bytes % BLOCK_ALIGNMENT) + BLOCK_ALIGNMENT;
+		}
+	}
+
+	bool isFirstBitUp(value_type* number) {
+		return *number & 1;
+	}
 
 public:
 	const char* getMessageOutput() const {
