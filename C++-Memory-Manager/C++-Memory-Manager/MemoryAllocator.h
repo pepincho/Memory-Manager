@@ -7,12 +7,12 @@
 typedef long long value_type;
 
 ///
-/// the number of elements we want to have in our block(array)
+/// The number of elements we want to have in our block(array)
 ///
 const int SIZE_BLOCK = 22;
 
 ///
-/// size of the block alignement
+/// Size of the block alignement
 ///
 const int BLOCK_ALIGNMENT = 8;
 

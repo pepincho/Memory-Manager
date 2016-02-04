@@ -207,7 +207,7 @@ value_type* MemoryAllocator::findBestFitBlockSpace() {
 }
 
 ///
-/// print one-by-one elements in our block
+/// Print one-by-one elements from the allocated block.
 ///
 void MemoryAllocator::printBlock() const {
 	for (int i = 0; i < SIZE_BLOCK; i++) {
@@ -218,7 +218,7 @@ void MemoryAllocator::printBlock() const {
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 ///
-/// Helpful functions for my Unit Test Project that tests my MemoryAllocator class.
+/// Helpful functions for the Unit Test Project that tests my MemoryAllocator class.
 ///
 
 ///
