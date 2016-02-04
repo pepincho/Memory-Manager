@@ -28,6 +28,10 @@ public:
 		}
 	}
 
+	value_type* getBlock() const {
+		return this->pBlock;
+	}
+
 	value_type* findBestFitBlockSpace();
 
 private:
