@@ -38,14 +38,25 @@ int main() {
 	custom_allocator.MyFree((value_type*)test_4);
 
 	custom_allocator.MyFree((value_type*)test_3);
+	custom_allocator.MyFree((value_type*)test_3);
+
 
 
 	char* test_6 = (char*)custom_allocator.MyMalloc(160);
 	custom_allocator.MyFree((value_type*)test_6);
 	char* test_7 = (char*)custom_allocator.MyMalloc(1);
 	char* test_8 = (char*)custom_allocator.MyMalloc(12);
+	value_type* test_9 = (value_type*)custom_allocator.MyMalloc(88);
 
-	
+	char* test_10 = (char*)custom_allocator.MyMalloc(1);
+
+	custom_allocator.MyFree((value_type*)test_10);
+	//custom_allocator.MyFree((value_type*)test_9);
+	//std::cout << "Ho" << std::endl;
+	custom_allocator.MyFree((value_type*)(test_9 + 11 + 1));
+	custom_allocator.MyFree((value_type*)(test_9));
+
+
 	//std::cout << test_3[0] << std::endl;
 
 

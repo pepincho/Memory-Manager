@@ -99,7 +99,7 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 }
 
 void MemoryAllocator::MyFree(value_type* pBlock) {
-	if (pBlock == NULL) {
+	if (pBlock == NULL || ! isFirstBitUp(pBlock - 1)) {
 		std::cerr << "ERROR! Wrong address." << std::endl;
 		return;
 	}
