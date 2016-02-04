@@ -18,22 +18,18 @@ int main() {
 	std::cout << "========================================================================" << std::endl;
 
 
-	MemoryAllocator obj;
-	value_type* test_1 = (value_type*)obj.MyMalloc(37);
-	value_type* test_2 = (value_type*)obj.MyMalloc(24);
-	value_type* test_3 = (value_type*)obj.MyMalloc(31);
-	value_type* test_4 = (value_type*)obj.MyMalloc(14);
+	//MemoryAllocator obj;
+	//value_type* test_1 = (value_type*)obj.MyMalloc(37);
+	//value_type* test_2 = (value_type*)obj.MyMalloc(24);
+	//value_type* test_3 = (value_type*)obj.MyMalloc(31);
+	//value_type* test_4 = (value_type*)obj.MyMalloc(14);
 
-	obj.MyFree((value_type*)test_2);
-	std::cout << *(test_2 - 1) << std::endl;
+	//obj.MyFree((value_type*)test_2);
+	//std::cout << *(test_2 - 1) << std::endl;
 
-	obj.MyFree((value_type*)test_4);
+	//obj.MyFree((value_type*)test_4);
 
-	value_type* test_5 = (value_type*)obj.MyMalloc(9);
-
-
-
-
+	//value_type* test_5 = (value_type*)obj.MyMalloc(9);
 
 
 

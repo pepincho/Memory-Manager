@@ -99,8 +99,10 @@ value_type* MemoryAllocator::MyMalloc(size_t bytes) {
 }
 
 void MemoryAllocator::MyFree(value_type* pBlock) {
+	clearMessage();
 	if (pBlock == NULL || ! isFirstBitUp(pBlock - 1)) {
 		std::cerr << "ERROR! Wrong address." << std::endl;
+		this->msg_output = "ERROR! Wrong address.";
 		return;
 	}
 
@@ -115,6 +117,7 @@ void MemoryAllocator::MyFree(value_type* pBlock) {
 
 	if (currentHeader < pStartBlock || currentHeader > pEndBlock) {
 		std::cerr << "ERROR! Wrong address." << std::endl;
+		this->msg_output = "ERROR! Wrong address.";
 		return;
 	}
 

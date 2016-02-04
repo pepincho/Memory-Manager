@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <string>
+
 typedef long long value_type;
 
 
@@ -34,11 +36,24 @@ public:
 
 	value_type* findBestFitBlockSpace();
 
+public:
+	const char* getMessageOutput() const {
+		return this->msg_output;
+	}
+
+private:
+	void clearMessage() {
+		this->msg_output = "";
+	}
+
 private:
 	value_type* pBlock;
 
 private:
 	value_type* pStartBlock;
 	value_type* pEndBlock;
+
+private:
+	const char* msg_output = "";
 };
 
